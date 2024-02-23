@@ -3,31 +3,27 @@ import './Subtotal.css'
 import { useStateValue } from '../providers/StateProviders'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom'
 import {getBasketTotal} from '../providers/Reducer'
-import CurrencyFormat from 'react-currency-format'
-
-
 
 function Subtotal() {
     const history  = useHistory();
     const  [{ basket }, dispatch] = useStateValue()
 
+    const getFormattedTotal = (total) => {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2,
+        }).format(total);
+    }
 
+    const total = getBasketTotal(basket);
 
-  return (
-    <div className="subtotal">
-        <CurrencyFormat renderText={(value) => (
-            <p> Subtotal  ({basket?.length} item) <strong>:{value}</strong></p>
-        )}
-
-            decimalScale={2}
-            value={getBasketTotal(basket)}
-            displayType={"text"}
-            thousandSeparator={true}
-            prefix={"$"}
-             />
+    return (
+        <div className="subtotal">
+            <p> Subtotal  ({basket?.length} item) <strong>{getFormattedTotal(total)}</strong></p>
             <button>Proceed to Checkout</button>
-    </div>
-  )
+        </div>
+    )
 }
 
 export default Subtotal
